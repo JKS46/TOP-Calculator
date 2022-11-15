@@ -1,1 +1,3 @@
-# TOP-Calculator
+# Calci
+
+Basic calculator using js
