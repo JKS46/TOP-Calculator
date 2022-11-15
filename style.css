@@ -1,5 +1,8 @@
 *{
-
+    background-color: black;
+    color: white;
+    text-align: center;
+    font-family: "Comic Sans MS",'Times New Roman', Times, serif,cursive,sans-serif;
 }
 body{
     padding: 0;
