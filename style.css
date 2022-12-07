@@ -19,9 +19,6 @@ main{
     max-width: 400px;
     height: 425px;
     display: flex;
- /*    flex-direction: column;
-    justify-content: center;
-    align-items: center; */
 }
 #container{
     flex: auto;
