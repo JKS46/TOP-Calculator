@@ -7,6 +7,7 @@ function calculator(e){
     console.log(target);
    
 }
+/* touch and key function included */
 
 function reset(){
     console.log("clear");
