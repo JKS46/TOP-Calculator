@@ -1,8 +1,10 @@
-const container = document.querySelector('#container');
+const buttonPressed = document.querySelectorAll(".btns>button");
 const display = document.querySelector('#display');
 let doubleOperator = 0;
 
-container.addEventListener("click",calculator);
+buttonPressed.forEach((button) =>{
+    button.addEventListener("click",calculator);
+});
 
 function calculator(e){
     const target = e.target;
@@ -14,11 +16,6 @@ function calculator(e){
     }
     ,250);
 
-    if(display.textContent.length >27){
-        alert("This is too long");
-        return
-    }
-
     if(target.textContent == "Clear"){
         reset();
     }
@@ -29,6 +26,12 @@ function calculator(e){
         equal();
     }
     else{
+        if(display.textContent.length >24){
+            alert("This is too long");
+            return
+        }
+
+        /* To prevent stuff like <+-*> all typed back to back*/
         if(target.classList.contains("op")){
             doubleOperator++;
         }
