@@ -35,6 +35,11 @@ main{
     flex:1;
     color: red;
 }
+.pressed{
+    box-shadow:0 0 1em red;
+    transform: scale(1.1);
+    border-color: red;
+}
 button,.display{
    border: 2px solid white;
     border-radius: 5px;
