@@ -5,6 +5,7 @@ let doOperation = 0;
 let doubleOperator = 0;
 let operand1 = 0;
 let operand2 = 0;
+let operator2 = "";
 let operator = "";
 let result = 0;
 
@@ -30,6 +31,11 @@ function calculator(e){
     }
     else if(target.textContent == "="){
         getOperands();
+        if(operand2 == 0){
+            alert("Invalid input");
+            reset();
+            return;
+        }
         equal();
     }else if(target.textContent == "+/-"){
         display.textContent = display.textContent * -1;
@@ -42,10 +48,15 @@ function calculator(e){
     }else if(target.classList.contains("op")){
         doubleOperator++;
          /* To prevent stuff like <+-*> all typed back to back*/
+        if(operator2 != undefined && operand1 !=0){
+            doubleOperator++;
+        }
         if(doubleOperator>1){
             backspace();
         }
         display.textContent += " "+target.textContent+" ";
+
+        console.log(display.textContent," display",display.textContent.length," length");
 
         getOperands();
         if(operand2 != 0){
@@ -70,6 +81,13 @@ function calculator(e){
 
 function reset(){
     display.textContent = "0";
+    operand1 = 0;
+    operand2 = 0;
+    operator = "";
+    operator2 = "";
+    result = 0;
+    doubleOperator = 0;
+    doOperation = 0;
 }
 
 function backspace(){
@@ -109,7 +127,7 @@ function equal(){
             result = operand1 * operand2;
             break;
         case "/":
-            if(operand1 == 0 || operand2 == 0){
+            if(operand2 == 0){
                 alert("Zero division error");
                 reset();
                 return;
@@ -122,16 +140,23 @@ function equal(){
     if(result % 1 != 0){
         result = result.toFixed(2);
     }
-    result = result.toString();
-    result = result.replace(".", "•");
     display.textContent = result;
+    if(operator2 != undefined){
+        display.textContent = result+" "+operator2+" ";
+    }
+    display.textContent = display.textContent.replace(".","•");
+    display.textContent = display.textContent.replace("*","x");
+    console.log("___________________________");
 }
 
 function getOperands(){
     let correctDisplay = display.textContent.replace(/[•x]/g,char => replaceChars[char]);
     let operands = correctDisplay.split(" ");
+    console.log(operands);
     operand1 = Number(operands[0]);
-    operand2 = Number(operands[2]);
     operator = operands[1];
-    console.log(operand1,operator,operand2);
+    operand2 = Number(operands[2]);
+    operator2 = operands[3];
+
+    console.log(operand1,operator,operand2,operator2);
 }
