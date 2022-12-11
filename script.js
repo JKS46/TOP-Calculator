@@ -1,5 +1,6 @@
 const buttonPressed = document.querySelectorAll(".btns>button");
 const display = document.querySelector('#display');
+const replaceChars = {"•":".","x":"*","÷":"/"," ":""};
 let doubleOperator = 0;
 
 buttonPressed.forEach((button) =>{
@@ -24,6 +25,16 @@ function calculator(e){
     }
     else if(target.textContent == "="){
         equal();
+    }else if(target.classList.contains("op")){
+        doubleOperator++;
+         /* To prevent stuff like <+-*> all typed back to back*/
+        if(doubleOperator>1){
+            backspace();
+            backspace();
+            backspace();
+        }
+        display.textContent += " "+target.textContent+" ";
+        console.log(display.textContent.length,"length");
     }
     else{
         if(display.textContent.length >24){
@@ -31,17 +42,7 @@ function calculator(e){
             return
         }
 
-        /* To prevent stuff like <+-*> all typed back to back*/
-        if(target.classList.contains("op")){
-            doubleOperator++;
-        }
-        else{
-            doubleOperator=0;
-        }
-
-        if(doubleOperator>1){
-            backspace();
-        }
+        doubleOperator = 0;
 
         if(display.textContent == "0"){
             display.textContent = "";
@@ -63,6 +64,6 @@ function backspace(){
 }
 
 function equal(){
-    console.log("equals");
-
+    display.textContent = display.textContent.replace(/[•x ÷]/g,char => replaceChars[char]);
+    console.log(display.textContent);
 }
