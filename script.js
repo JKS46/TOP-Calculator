@@ -1,6 +1,7 @@
 const buttonPressed = document.querySelectorAll(".btns>button");
 const display = document.querySelector('#display');
 const replaceChars = {"•":".","x":"*"};
+let doOperation = 0;
 let doubleOperator = 0;
 let operand1 = 0;
 let operand2 = 0;
@@ -35,6 +36,8 @@ function calculator(e){
             alert("Invalid input");
             reset();
         }
+    }else if(target.textContent == "•"){
+        display.textContent += "•";
     }else if(target.classList.contains("op")){
         doubleOperator++;
          /* To prevent stuff like <+-*> all typed back to back*/
@@ -82,6 +85,17 @@ function equal(){
 
     console.log(operand1,operand2,operator);
 
+    if(operand1 == "NaN" || operand2 == "NaN"){
+        alert("Invalid input");
+        reset();
+        return;
+    }
+
+    if(operand1.length > 10 || operand2.length > 10){
+        alert("This is too long");
+        return
+    }
+
     switch(operator){
         case "+":
             result = operand1 + operand2;
@@ -101,5 +115,7 @@ function equal(){
         default:
             alert("Something went wrong");
     }
+    result = result.toString();
+    result = result.replace(".", "•");
     display.textContent = result;
 }
