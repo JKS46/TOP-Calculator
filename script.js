@@ -29,6 +29,7 @@ function calculator(e){
         backspace();
     }
     else if(target.textContent == "="){
+        getOperands();
         equal();
     }else if(target.textContent == "+/-"){
         display.textContent = display.textContent * -1;
@@ -43,12 +44,15 @@ function calculator(e){
          /* To prevent stuff like <+-*> all typed back to back*/
         if(doubleOperator>1){
             backspace();
-            backspace();
-            backspace();
         }
         display.textContent += " "+target.textContent+" ";
-    }
-    else{
+
+        getOperands();
+        if(operand2 != 0){
+            doubleOperator = 0;
+            equal();
+        }
+    }else{
         if(display.textContent.length >24){
             alert("This is too long");
             return
@@ -70,21 +74,19 @@ function reset(){
 
 function backspace(){
     display.textContent = display.textContent.slice(0,-1);
+
+    let opDisplay = display.textContent[display.textContent.length-1];
+
+    if(opDisplay == "+" || opDisplay == "-" || opDisplay == "x" || opDisplay == "/"){
+        backspace();
+        backspace();
+    }
     if(display.textContent == ""){
         display.textContent = "0";
     }
 }
 
 function equal(){
-    display.textContent = display.textContent.replace(/[•x]/g,char => replaceChars[char]);
-
-    let operands = display.textContent.split(" ");
-    operand1 = Number(operands[0]);
-    operand2 = Number(operands[2]);
-    operator = operands[1];
-
-    console.log(operand1,operand2,operator);
-
     if(operand1 == "NaN" || operand2 == "NaN"){
         alert("Invalid input");
         reset();
@@ -107,15 +109,29 @@ function equal(){
             result = operand1 * operand2;
             break;
         case "/":
-            result = operand1 / operand2;
-            if(result % 1 != 0){
-                result = result.toFixed(2);
+            if(operand1 == 0 || operand2 == 0){
+                alert("Zero division error");
+                reset();
+                return;
             }
+            result = operand1 / operand2;
             break;
         default:
             alert("Something went wrong");
     }
+    if(result % 1 != 0){
+        result = result.toFixed(2);
+    }
     result = result.toString();
     result = result.replace(".", "•");
     display.textContent = result;
+}
+
+function getOperands(){
+    let correctDisplay = display.textContent.replace(/[•x]/g,char => replaceChars[char]);
+    let operands = correctDisplay.split(" ");
+    operand1 = Number(operands[0]);
+    operand2 = Number(operands[2]);
+    operator = operands[1];
+    console.log(operand1,operator,operand2);
 }
