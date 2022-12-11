@@ -1,7 +1,11 @@
 const buttonPressed = document.querySelectorAll(".btns>button");
 const display = document.querySelector('#display');
-const replaceChars = {"•":".","x":"*","÷":"/"," ":""};
+const replaceChars = {"•":".","x":"*"};
 let doubleOperator = 0;
+let operand1 = 0;
+let operand2 = 0;
+let operator = "";
+let result = 0;
 
 buttonPressed.forEach((button) =>{
     button.addEventListener("click",calculator);
@@ -25,6 +29,12 @@ function calculator(e){
     }
     else if(target.textContent == "="){
         equal();
+    }else if(target.textContent == "+/-"){
+        display.textContent = display.textContent * -1;
+        if(display.textContent == "NaN"){
+            alert("Invalid input");
+            reset();
+        }
     }else if(target.classList.contains("op")){
         doubleOperator++;
          /* To prevent stuff like <+-*> all typed back to back*/
@@ -34,7 +44,6 @@ function calculator(e){
             backspace();
         }
         display.textContent += " "+target.textContent+" ";
-        console.log(display.textContent.length,"length");
     }
     else{
         if(display.textContent.length >24){
@@ -64,6 +73,33 @@ function backspace(){
 }
 
 function equal(){
-    display.textContent = display.textContent.replace(/[•x ÷]/g,char => replaceChars[char]);
-    console.log(display.textContent);
+    display.textContent = display.textContent.replace(/[•x]/g,char => replaceChars[char]);
+
+    let operands = display.textContent.split(" ");
+    operand1 = Number(operands[0]);
+    operand2 = Number(operands[2]);
+    operator = operands[1];
+
+    console.log(operand1,operand2,operator);
+
+    switch(operator){
+        case "+":
+            result = operand1 + operand2;
+            break;
+        case "-":
+            result = operand1 - operand2;
+            break;
+        case "*":
+            result = operand1 * operand2;
+            break;
+        case "/":
+            result = operand1 / operand2;
+            if(result % 1 != 0){
+                result = result.toFixed(2);
+            }
+            break;
+        default:
+            alert("Something went wrong");
+    }
+    display.textContent = result;
 }
