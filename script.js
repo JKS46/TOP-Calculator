@@ -9,11 +9,6 @@ let operator2 = "";
 let operator = "";
 let result = 0;
 
-document.addEventListener("touchstart", notDesktop);
- function notDesktop(){
-     alert("This is a desktop calculator, please use a desktop to use it.");
- }
-
 buttonPressed.forEach((button) =>{
     button.addEventListener("click",calculator);
 });
