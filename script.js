@@ -7,7 +7,7 @@ let operator1 = "";
 let operand2 = "";
 let operator2 = "";
 let result = 0;
-let hasDot = 0;
+let hasDot = false;
 
 buttonPressed.forEach((button) =>{
     button.addEventListener("click",calculator);
@@ -48,21 +48,27 @@ function calculator(e){
 
         displayOperation();
     }else if(target.textContent == "•"){
-        if(hasDot == 1){
-            alert("You can't have more than one decimal point");
-            return;
-        }
-
         if(operand2 == "" && operator1 == ""){
+            operand1 = operand1.toString();
+            hasDot = operand1.includes("•");
+            if(hasDot == true){
+                alert("You can't have more than one decimal point");
+                return;
+            }
             operand1 += "•";
-            hasDot = 1;
+            
         }else{
+            operand2 = operand2.toString();
+            hasDot = operand2.includes("•");
+            if(hasDot == true){
+                alert("You can't have more than one decimal point");
+                return;
+            }
             operand2 += "•";
-            hasDot = 1;
         }
         displayOperation();
     }else if(target.classList.contains("op")){
-        hasDot = 0;
+        hasDot = false;
         if(operator1 != "" && operand2 != ""){
             operator2 = target.textContent;
             equal();
@@ -97,7 +103,7 @@ function reset(){
     operand2 = "";
     operator2 = "";
     result = 0;
-    hasDot = 0;
+    hasDot = false;
     display.textContent = "0";
 }
 
