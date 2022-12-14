@@ -39,7 +39,6 @@ function calculator(e){
         if(operand2 != ""){
             operand2 = operand2 * -1;
         }
-        console.log(operand1,operand2);
         convertToString();
 
         operand1 = operand1.replace(/[*.]/g,m => replaceCharsBack[m]);
@@ -48,6 +47,7 @@ function calculator(e){
 
         displayOperation();
     }else if(target.textContent == "•"){
+        
         if(operand2 == "" && operator1 == ""){
             operand1 = operand1.toString();
             hasDot = operand1.includes("•");
@@ -56,7 +56,6 @@ function calculator(e){
                 return;
             }
             operand1 += "•";
-            
         }else{
             operand2 = operand2.toString();
             hasDot = operand2.includes("•");
