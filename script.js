@@ -1,12 +1,11 @@
 const buttonPressed = document.querySelectorAll(".btns>button");
 const display = document.querySelector('#display');
 const replaceChars = {"•":".","x":"*"};
-let doOperation = 0;
-let doubleOperator = 0;
-let operand1 = 0;
-let operand2 = 0;
+const replaceCharsBack = {".":"•","*":"x"};
+let operand1 = "";
+let operator1 = "";
+let operand2 = "";
 let operator2 = "";
-let operator = "";
 let result = 0;
 let hasDot = 0;
 
@@ -31,98 +30,99 @@ function calculator(e){
         backspace();
     }
     else if(target.textContent == "="){
-        getOperands();
-        if(operand2 == 0){
-            alert("Invalid input");
-            reset();
-            return;
-        }
         equal();
+        displayOperation();
     }else if(target.textContent == "+/-"){
-        display.textContent = display.textContent * -1;
-        if(display.textContent == "NaN"){
-            alert("Invalid input");
-            reset();
+        operand1 = operand1 * -1;
+        if(operand2 != ""){
+            operand2 = operand2 * -1;
         }
+        displayOperation();
     }else if(target.textContent == "•"){
         if(hasDot == 1){
             alert("You can't have more than one decimal point");
             return;
         }
-        display.textContent += "•";
-        hasDot=1;
+
+        if(operand2 == "" && operator1 == ""){
+            operand1 += "•";
+            hasDot = 1;
+        }else{
+            operand2 += "•";
+            hasDot = 1;
+        }
+        displayOperation();
     }else if(target.classList.contains("op")){
         hasDot = 0;
-        doubleOperator++;
-         /* To prevent stuff like <+-*> all typed back to back*/
-        if(operator2 != undefined && operand1 !=0){
-            console.log(operator2," operator2",operand1," operand1");
-            doubleOperator++;
-        }
-        if(doubleOperator>1){
-            backspace();
-        }
-        display.textContent += " "+target.textContent+" ";
-
-        getOperands();
-        if(operand2 != 0){
-            doubleOperator = 0;
+        if(operator1 != ""){
+            operator2 = target.textContent;
             equal();
-        }
-    }else{
-        if(display.textContent.length >24){
-            alert("This is too long");
             return
         }
-
-        doubleOperator = 0;
-
-        if(display.textContent == "0"){
-            display.textContent = "";
+        operator1 = target.textContent;
+        displayOperation();
+    }else{
+        if(operator1 != ""){
+            operand2 += target.textContent;
+        }else{
+            if(operand1 == 0){
+                operand1 = "";
+            }
+            operand1 += target.textContent;
         }
-        display.textContent += target.textContent;
+        displayOperation();
+        if(operand1.length > 10 || operand2.length > 10){
+            alert("Maximum length can't cross 10 for each operand");
+            backspace();
+            return
+        }
     }
 }
-/* touch and key both? */
 
 function reset(){
-    display.textContent = "0";
-    operand1 = 0;
-    operand2 = 0;
-    operator = "";
+    operand1 = "";
+    operator1 = "";
+    operand2 = "";
     operator2 = "";
     result = 0;
-    doubleOperator = 0;
-    doOperation = 0;
+    hasDot = 0;
+    display.textContent = "0";
 }
 
 function backspace(){
-    display.textContent = display.textContent.slice(0,-1);
-
-    let opDisplay = display.textContent[display.textContent.length-1];
-
-    if(opDisplay == "+" || opDisplay == "-" || opDisplay == "x" || opDisplay == "/"){
-        display.textContent = display.textContent.slice(0,-1);
-        display.textContent = display.textContent.slice(0,-1);
+    if(operand2 != ""){
+        operand2 = operand2.slice(0,-1);
+    }else if(operator1 != ""){
+        operator1 = "";
+    }else if(operand1 != ""){
+        operand1 = operand1.slice(0,-1);
     }
-    if(display.textContent == ""){
-        display.textContent = "0";
+
+    if(operand1 == ""){
+        operand1 = 0;
     }
+displayOperation();
 }
 
 function equal(){
+    operand1 = operand1.toString();
+    operand2 = operand2.toString();
+
+    operand1 = operand1.replace(/[•x]/g,m => replaceChars[m]);
+    operand2 = operand2.replace(/[•x]/g,m => replaceChars[m]);
+    operator1 = operator1.replace(/[•x]/g,m => replaceChars[m]);
+    operator2 = operator2.replace(/[•x]/g,m => replaceChars[m]);
+
+    operand1 = Number(operand1);
+    operand2 = Number(operand2);
+
     if(operand1 == "NaN" || operand2 == "NaN"){
         alert("Invalid input");
         reset();
         return;
     }
-
-    if(operand1.length > 10 || operand2.length > 10){
-        alert("This is too long");
-        return
-    }
-
-    switch(operator){
+   
+    switch(operator1){
         case "+":
             result = operand1 + operand2;
             break;
@@ -134,7 +134,7 @@ function equal(){
             break;
         case "/":
             if(operand2 == 0){
-                alert("Zero division error");
+                alert("Cannot divide by 0");
                 reset();
                 return;
             }
@@ -142,27 +142,35 @@ function equal(){
             break;
         default:
             alert("Operator error");
+            reset();
     }
+
     if(result % 1 != 0){
         result = result.toFixed(2);
     }
-    display.textContent = result;
-    if(operator2 != undefined){
-        display.textContent = result+" "+operator2+" ";
+
+    if(result.length > 24){
+        alert("Too long,I won't do it");
+        reset();
+        return
     }
-    display.textContent = display.textContent.replace(".","•");
-    display.textContent = display.textContent.replace("*","x");
-    console.log("___________________________");
+    console.log(operand1,operator1,operand2,operator2," =>[num1 op1 num2 op2]");
+    display.textContent = result;
+    operand1 = display.textContent;
+    operand2 = "";
+    operator1 = operator2;
+    operator2 = "";
+    hasDot = 0;
+
+    operand1 = operand1.replace(/[*.]/g,m => replaceCharsBack[m]);
+    operator1 = operator1.replace(/[*.]/g,m => replaceCharsBack[m]);
+
+    displayOperation();
 }
 
-function getOperands(){
-    let correctDisplay = display.textContent.replace(/[•x]/g,char => replaceChars[char]);
-    let operands = correctDisplay.split(" ");
-    console.log(operands);
-    operand1 = Number(operands[0]);
-    operator = operands[1];
-    operand2 = Number(operands[2]);
-    operator2 = operands[3];
-
-    console.log(operand1,operator,operand2,operator2);
+function displayOperation(){
+    display.textContent = operand1 +" "+ operator1 +" "+ operand2;
+    if(operand1 == ""){
+        display.textContent = "0";
+    }
 }
