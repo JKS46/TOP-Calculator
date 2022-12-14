@@ -8,6 +8,7 @@ let operand2 = 0;
 let operator2 = "";
 let operator = "";
 let result = 0;
+let hasDot = 0;
 
 buttonPressed.forEach((button) =>{
     button.addEventListener("click",calculator);
@@ -44,19 +45,24 @@ function calculator(e){
             reset();
         }
     }else if(target.textContent == "•"){
+        if(hasDot == 1){
+            alert("You can't have more than one decimal point");
+            return;
+        }
         display.textContent += "•";
+        hasDot=1;
     }else if(target.classList.contains("op")){
+        hasDot = 0;
         doubleOperator++;
          /* To prevent stuff like <+-*> all typed back to back*/
         if(operator2 != undefined && operand1 !=0){
+            console.log(operator2," operator2",operand1," operand1");
             doubleOperator++;
         }
         if(doubleOperator>1){
             backspace();
         }
         display.textContent += " "+target.textContent+" ";
-
-        console.log(display.textContent," display",display.textContent.length," length");
 
         getOperands();
         if(operand2 != 0){
@@ -96,8 +102,8 @@ function backspace(){
     let opDisplay = display.textContent[display.textContent.length-1];
 
     if(opDisplay == "+" || opDisplay == "-" || opDisplay == "x" || opDisplay == "/"){
-        backspace();
-        backspace();
+        display.textContent = display.textContent.slice(0,-1);
+        display.textContent = display.textContent.slice(0,-1);
     }
     if(display.textContent == ""){
         display.textContent = "0";
