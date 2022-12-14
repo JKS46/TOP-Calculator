@@ -33,10 +33,19 @@ function calculator(e){
         equal();
         displayOperation();
     }else if(target.textContent == "+/-"){
+        convertToString();
+
         operand1 = operand1 * -1;
         if(operand2 != ""){
             operand2 = operand2 * -1;
         }
+        console.log(operand1,operand2);
+        convertToString();
+
+        operand1 = operand1.replace(/[*.]/g,m => replaceCharsBack[m]);
+        operand2 = operand2.replace(/[*.]/g,m => replaceCharsBack[m]);
+        operator1 = operator1.replace(/[*.]/g,m => replaceCharsBack[m]);
+
         displayOperation();
     }else if(target.textContent == "•"){
         if(hasDot == 1){
@@ -60,6 +69,9 @@ function calculator(e){
             return
         }
         operator1 = target.textContent;
+        if(operand1 == "" && operator1 != "" ){
+            operand1 = 0;
+        }
         displayOperation();
     }else{
         if(operator1 != ""){
@@ -105,16 +117,9 @@ displayOperation();
 }
 
 function equal(){
-    operand1 = operand1.toString();
-    operand2 = operand2.toString();
+    convertToString();
 
-    operand1 = operand1.replace(/[•x]/g,m => replaceChars[m]);
-    operand2 = operand2.replace(/[•x]/g,m => replaceChars[m]);
-    operator1 = operator1.replace(/[•x]/g,m => replaceChars[m]);
-    operator2 = operator2.replace(/[•x]/g,m => replaceChars[m]);
-
-    operand1 = Number(operand1);
-    operand2 = Number(operand2);
+    convertToNumber();
 
     if(operand1 == "NaN" || operand2 == "NaN"){
         alert("Invalid input");
@@ -154,6 +159,12 @@ function equal(){
         reset();
         return
     }
+
+    if(result == "Infinity" || result == "-Infinity" || result == "NaN"){
+        alert("Result went haywire");
+        reset();
+        return;
+    }
     console.log(operand1,operator1,operand2,operator2," =>[num1 op1 num2 op2]");
     display.textContent = result;
     operand1 = display.textContent;
@@ -173,4 +184,18 @@ function displayOperation(){
     if(operand1 == ""){
         display.textContent = "0";
     }
+}
+
+function convertToString(){
+    operand1 = operand1.toString();
+    operand2 = operand2.toString();
+    operand1 = operand1.replace(/[•x]/g,m => replaceChars[m]);
+    operand2 = operand2.replace(/[•x]/g,m => replaceChars[m]);
+    operator1 = operator1.replace(/[•x]/g,m => replaceChars[m]);
+    operator2 = operator2.replace(/[•x]/g,m => replaceChars[m]);
+}
+
+function convertToNumber(){
+    operand1 = Number(operand1);
+    operand2 = Number(operand2);
 }
