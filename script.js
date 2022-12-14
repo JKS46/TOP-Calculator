@@ -63,7 +63,7 @@ function calculator(e){
         displayOperation();
     }else if(target.classList.contains("op")){
         hasDot = 0;
-        if(operator1 != ""){
+        if(operator1 != "" && operand2 != ""){
             operator2 = target.textContent;
             equal();
             return
